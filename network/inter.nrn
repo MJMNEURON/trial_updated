@@ -1,0 +1,11 @@
+begintemplate Interneuron
+proc init (){
+	load_file("nrngui.hoc")
+	load_file("INmodel.hoc")
+	xopen("Parameters2.hoc")
+	access soma
+	Vrest = -69
+
+
+}
+endtemplate Interneuron

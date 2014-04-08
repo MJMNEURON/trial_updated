@@ -1,0 +1,135 @@
+load_file("nrngui.hoc")
+
+load_file("INmodel.hoc")
+
+xpanel("select parameterization")
+  xbutton("P1:MP = -63","runP1MP()")
+ // xbutton("Figure 4 B1. P1:HP = -57","runP1HP()")
+  xbutton("P2:MP = -69","runP2MP()")
+ // xbutton("Figure 4 B2. P1:MP = -58","runP2HP()")
+xpanel()
+
+proc runP1MP() {
+  {print "Using Parameterization 1, Resting pot. -63mV"}
+  {xopen("Parameters1.hoc")}
+  {access soma}
+  {Vrest = -63}
+
+}
+
+
+proc runP2MP() {
+  {print "Using Parameterization 2, Resting pot. -69mV"}
+  {xopen("Parameters2.hoc")}
+  {access soma}
+  {Vrest = -69}
+
+}
+
+//----------------------------------------------------------------------------
+//  insert electrodes in the soma
+//----------------------------------------------------------------------------
+objref stim
+
+soma stim=new IClamp(0.5)
+//  {IClamp[0].amp = 0.055}
+//  {IClamp[1].amp = 0}
+
+//rectangular stimulation
+//stim.amp=0.075
+stim.del=0
+stim.dur=900
+
+//alternative stimulation sin
+pi=3.1415
+objref vec1, vec2, vec3, vec4, vec5, recv
+vec1=new Vector(200, 0.05)
+vec2=new Vector(500, 0.05)
+vec3=new Vector(200, 0.05)
+vec4=new Vector()
+vec2.sin(5, pi/2)
+
+vec4.append(vec1,vec2,vec3)
+vec4.play(&stim.amp, 1)
+//vec4.printf()
+
+
+
+//----------------------------------------------------------------------------
+//  transient time
+//----------------------------------------------------------------------------
+trans = 00
+
+print " "
+print ">> Transient time of ",trans," ms"
+print " "
+
+
+
+//----------------------------------------------------------------------------
+//  setup simulation parameters
+//----------------------------------------------------------------------------
+Dt = 0.2
+npoints = 4000
+
+dt = 0.1			// must be submultiple of Dt
+tstart = trans
+tstop = trans + npoints * Dt
+runStopAt = tstop
+steps_per_ms = 1/Dt
+
+celsius = 34			// temperature of John's experiments
+
+v_init = -74			// approximate resting Vm
+
+
+
+////////////////////////////////////
+//saving input data
+////////////////////////////////////
+objref sadata
+//run()
+sadata = new File()
+sadata.wopen("inputI.dat")
+sadata.printf("timestep \t current \n \n")
+for i=0, 899{
+    sadata.printf("%g \t \t %g \n", i, vec4.x[i])
+}
+sadata.close()
+
+
+
+////////////////////////////////////
+//saving response data 
+//saving with thresholding
+////////////////////////////////////
+
+
+objref savdata, recv, rect, savspike
+rect = new Vector()
+recv = new Vector()
+rect.record(&t)
+recv.record(&soma.v(0.5))
+run()
+savdata = new File()
+savspike= new File()
+savdata.wopen("outputV.dat")
+savspike.wopen("spikes.dat")
+//recv.printf()
+timestep=0
+for i=0, rect.size()-1 {
+    if (recv.x[i] >= -15 && timestep + 1 < rect.x(i)){
+	timestep=rect.x(i)
+	savspike.printf("%g\n", timestep)
+	//savspike.printf("%g \t %g\n", rect.x(i), recv.x(i))
+}
+}
+for i=0,rect.size()-1 {
+    savdata.printf("%g \t \t %g\n", rect.x(i), recv.x(i))
+
+}
+
+
+savdata.close()
+savspike.close()
+

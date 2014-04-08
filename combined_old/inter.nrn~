@@ -1,0 +1,69 @@
+begintemplate Interneuron
+public soma, dend
+create soma
+
+load_file("nrngui.hoc")
+
+xopen("INmodel.hoc")
+
+proc init(){
+	/*
+
+	proc runP1MP() {
+	  {print "Using Parameterization 1, Resting pot. -63mV"}
+	  {xopen("Parameters1.hoc")}
+	  {access soma}
+	  {Vrest = -63}
+
+	}
+
+	proc runP2MP() {*/
+	 // {print "Using Parameterization 2, Resting pot. -69mV"}
+	  {xopen("Parameters2.hoc")}
+	  {access soma}
+	  {Vrest = -69}
+
+	}
+}
+
+//----------------------------------------------------------------------------
+//  insert electrodes in the soma
+//----------------------------------------------------------------------------
+/*
+objref stim
+
+soma stim=new IClamp(0.5)
+
+objref syn
+dend[1] syn= new ExpSyn(0.5)
+syn.tau=0.1
+syn.i=1
+syn.e=0
+
+objref netcon, nil
+netcon = new NetCon(nil, syn)
+netcon.weight = 1.2
+
+objref fspikes, vecspikes
+fspikes=new File()
+fspikes.ropen("/home/major/trial/relay/mar_11/spatial_frequency_tuning_0.15ahh.dat")
+vecspikes=new Vector()
+vecspikes.scanf(fspikes)
+for total=0, vecspikes.size()-1{
+    vecspikes.x(total)=vecspikes.x(total)*1000
+}
+vecspikes.printf()
+
+objref netcon, nil
+netcon = new NetCon(nil, syn) //defining a synaptic connection using netcon
+netcon.weight = 1.425
+
+objref fih
+fih = new FInitializeHandler("loadqueue()")
+proc loadqueue() { 
+	for ii=0, vecspikes.size()-1 {netcon.event(vecspikes.x[ii])
+}
+}
+*/
+endtemplate Interneuron
+
