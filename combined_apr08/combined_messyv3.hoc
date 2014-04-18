@@ -146,11 +146,51 @@ Prethresh_AMPA = 0 // (mV) voltage level nec for release
 
 retinal_axon syn2retinal_axon.append( new NetCon(&v(0.5), syn, Prethresh_AMPA, 0, 0.19496) )
 
+
+
 //----------------------------------------------------------------------------
 // interneuron
 //----------------------------------------------------------------------------
 
 load_file("INmodel.hoc")
+
+//----------------------------------------------------------------------------
+// inter -> relay GABA_A 
+//We can implement this by having a GABAa synaptic point process in the relay cell monitoring 
+//the Vm (or other levels, like Ca) of interneuron dendrite receiving from retina. Based on 
+//that level we will set a threshold after which the synapse is activated and the relay cell is inhibited.
+//----------------------------------------------------------------------------
+objectvar syn2interneuron
+syn2interneuron = new List()
+
+objectvar synj
+dend4[0] synj=new GABAa(0.5) //relay GABA_A
+//dend4[0] synj.loc(0.5) // assign postsynaptic compartment
+//setpointer synj.pre, dend[104].v(0.5) // assign presynaptic compartment
+dend[104] syn2interneuron.append( new NetCon(&dend[104].v(0.5), synj, -50, 0, 1.2) )
+/*
+Cmax_AMPA = 1 // (mM) max transmitter concentration
+Cdur_AMPA = 1 // (ms) transmitter duration (rising phase)
+Alpha_AMPA = 1.1 // (/ms mM) forward (binding) rate
+Beta_AMPA = 0.19 // (/ms) backward (unbinding) rate
+Erev_AMPA = 0 // (mV) reversal potential
+Prethresh_AMPA = 0 // (mV) voltage level nec for release
+Deadtime_AMPA = 1 // (ms) mimimum time between release events
+syn.g = 0.0001 // (umho) maximum conductanc
+
+
+objref netcon_ir
+netcon_ir = new NetCon(&v(0.5), synj)
+netcon_ir.weight = 0.04
+
+objref fih
+fih = new FInitializeHandler("loadqueue()")
+proc loadqueue() {
+for ii=0, vecstim.size()-1 {netcon_ir.event(vecstim.x[ii])
+}
+}
+*/
+
 
 //----------------------------------------------------------------------------
 // relay cell
@@ -161,7 +201,7 @@ objectvar relay
 relay = new RelayCell()
 */
 //----------------------------------------------------------------------------
-// retina -> relay AMPA 
+// retina -> inter AMPA 
 //----------------------------------------------------------------------------
 objectvar syni // won't be any different if using objref
 dend[104] syni = new AMPA(0.5)
@@ -176,6 +216,7 @@ Prethresh_AMPA = 0 // (mV) voltage level nec for release
 // syn.gmax = 0.0001 // (umho) maximum conductanc
 
 retinal_axon syn2retinal_axon.append( new NetCon(&v(0.5), syni, Prethresh_AMPA, 0, 0.01) )
+
 //----------------------------------------------------------------------------
 // transient time
 //----------------------------------------------------------------------------
@@ -206,11 +247,11 @@ rect = new Vector()
 recv = new Vector()
 rect.record(&t)
 //recv.record(&retinal_axon.v(0.5))
-recv.record(&soma.v(0.5))
+recv.record(&soma.v(0.5))//recording from relay cell
 run()
 //rect.printf()
 savspike= new File()
-savspike.wopen("result_cs_2/csr4/csr4.dat")
+savspike.wopen("result_cs_2/csr4/csr1.dat")
 //rect.printf()
 timestep=0
 for i=0, rect.size()-1 {

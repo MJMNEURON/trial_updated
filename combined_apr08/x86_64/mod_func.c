@@ -11,6 +11,7 @@ modl_reg(){
     fprintf(stderr," alpha.mod");
     fprintf(stderr," ampa.mod");
     fprintf(stderr," cadecay.mod");
+    fprintf(stderr," gabaa.mod");
     fprintf(stderr," hh2.mod");
     fprintf(stderr," iahp.mod");
     fprintf(stderr," iar.mod");
@@ -22,6 +23,7 @@ modl_reg(){
   _alpha_reg();
   _ampa_reg();
   _cadecay_reg();
+  _gabaa_reg();
   _hh2_reg();
   _iahp_reg();
   _iar_reg();

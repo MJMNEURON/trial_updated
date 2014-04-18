@@ -52,7 +52,7 @@ rstim.amp = 0
 
 objref fspikes, vecspikes, vecstim
 fspikes=new File()
-fspikes.ropen("../combined/contrast/cs40_01.dat")
+fspikes.ropen("../combined_apr08/contrast/cs40_01.dat")
 vecspikes=new Vector()
 vecstim = new Vector(1000,0)
 vecspikes.scanf(fspikes)
