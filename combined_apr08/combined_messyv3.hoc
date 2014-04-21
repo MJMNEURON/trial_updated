@@ -38,9 +38,6 @@ retinal_axon {
 	cainf_cad = 2.4e-4	
 }
 
-////////////////////////////////////////
-///relay cell topology
-/////////////////////////////////////////
 //----------------------------------------------------------------------------
 // relay cell topology
 //----------------------------------------------------------------------------
@@ -149,19 +146,13 @@ Prethresh_AMPA = 0 // (mV) voltage level nec for release
 
 retinal_axon syn2retinal_axon.append( new NetCon(&v(0.5), syn, Prethresh_AMPA, 0, 0.19496) )
 
-
-
 //----------------------------------------------------------------------------
 // interneuron
 //----------------------------------------------------------------------------
-
 load_file("INmodel.hoc")
 
 //----------------------------------------------------------------------------
 // inter -> relay GABA_A 
-//We can implement this by having a GABAa synaptic point process in the relay cell monitoring 
-//the Vm (or other levels, like Ca) of interneuron dendrite receiving from retina. Based on 
-//that level we will set a threshold after which the synapse is activated and the relay cell is inhibited.
 // We can implement this by having a GABAa synaptic point process in the relay cell monitoring 
 // the Vm (or other levels, like Ca) of interneuron dendrite receiving from retina. Based on 
 // that level we will set a threshold after which the synapse is activated and the relay cell is inhibited.
