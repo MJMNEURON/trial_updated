@@ -138,7 +138,7 @@ Prethresh_AMPA = 0 // (mV) voltage level nec for release
 retinal_axon syn2retinal_axon.append( new NetCon(&v(0.5), syn, Prethresh_AMPA, 0, 0.2) )
 
 //----------------------------------------------------------------------------
-// cortex -> relay AMPA 
+// cortex -> relay 
 //----------------------------------------------------------------------------
 
 nsyn=1
